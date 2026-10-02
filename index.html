@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atención en Línea Abril - Grupo 4</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #003d5c 0%, #00597a 50%, #007499 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── Partículas ── */
+        .floating-particles { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+        .particle { position:absolute; font-size:20px; opacity:0.15; animation:float 15s infinite ease-in-out; }
+        .particle:nth-child(1){left:10%;animation-delay:0s;top:20%}
+        .particle:nth-child(2){left:20%;animation-delay:2s;top:60%}
+        .particle:nth-child(3){left:30%;animation-delay:4s;top:80%}
+        .particle:nth-child(4){left:50%;animation-delay:1s;top:40%}
+        .particle:nth-child(5){left:70%;animation-delay:3s;top:70%}
+        .particle:nth-child(6){left:80%;animation-delay:5s;top:30%}
+        .particle:nth-child(7){left:90%;animation-delay:2.5s;top:50%}
+        @keyframes float {
+            0%,100%{transform:translateY(0)rotate(0);opacity:.15}
+            25%{transform:translateY(-30px)rotate(90deg);opacity:.25}
+            50%{transform:translateY(-60px)rotate(180deg);opacity:.15}
+            75%{transform:translateY(-30px)rotate(270deg);opacity:.25}
+        }
+
+        .session-container {
+            width:100%; background:#fff;
+            box-shadow:0 20px 60px rgba(0,0,0,.4);
+            animation:fadeInUp .8s ease-out;
+            position:relative; z-index:1; min-height:100vh;
+        }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+
+        .header-accent {
+            height:6px;
+            background:linear-gradient(90deg,#39a900,#4cd137,#39a900,#4cd137);
+            background-size:400% 100%;
+            animation:gradientFlow 4s ease infinite;
+        }
+        @keyframes gradientFlow { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+        /* ── Header ── */
+        .header-section {
+            background:linear-gradient(135deg,#003d5c 0%,#00597a 50%,#003d5c 100%);
+            padding:8px 30px; text-align:center;
+            position:relative; overflow:hidden;
+            display:flex; flex-direction:column; align-items:center; gap:6px;
+        }
+        .header-section::before {
+            content:'{ } < /> [ ] ( ) ; : = + - * / % & | ! ? # $ @';
+            position:absolute; top:50%; left:-100%;
+            font-family:'Courier New',monospace; font-size:40px;
+            color:rgba(57,169,0,.08); white-space:nowrap;
+            animation:scrollCode 20s linear infinite; transform:translateY(-50%);
+        }
+        @keyframes scrollCode { from{left:-100%} to{left:100%} }
+
+        .header-title-row { display:flex; align-items:center; justify-content:center; gap:15px; flex-wrap:wrap; position:relative; z-index:1; }
+
+        .header-section h1 {
+            color:#fff; font-size:clamp(1.1rem,2.5vw,1.6rem); font-weight:700;
+            animation:slideIn .8s ease-out .2s both; line-height:1.3;
+        }
+        .header-section h1 .code-tag {
+            color:#39a900; font-family:'Courier New',monospace;
+            text-shadow:0 0 10px rgba(57,169,0,.5); animation:pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+        @keyframes slideIn { from{opacity:0;transform:translateX(-50px)} to{opacity:1;transform:translateX(0)} }
+
+        .date-badge {
+            display:inline-flex; align-items:center; gap:6px;
+            background:linear-gradient(135deg,#39a900,#4cd137);
+            color:#fff; padding:6px 15px; border-radius:20px;
+            font-weight:600; font-size:.8rem;
+            box-shadow:0 3px 12px rgba(57,169,0,.4);
+            animation:bounceIn .8s ease-out .6s both; white-space:nowrap;
+        }
+        @keyframes bounceIn { 0%{transform:scale(0);opacity:0} 50%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+
+        /* ── Intro ── */
+        .intro-section { background:#f8f9fa; padding:18px 30px; border-bottom:1px solid #e0e0e0; }
+        .intro-section p { color:#2c3e50; line-height:1.7; font-size:1rem; }
+
+        /* ── Grid ── */
+        .content-wrapper { display:flex; flex-direction:column; padding:10px 0 15px; }
+        .content-grid { display:grid; grid-template-columns:1fr; gap:10px; padding:15px 0 0; }
+        @media(min-width:768px) { .content-grid { grid-template-columns:1.5fr 1fr; padding:15px 25px; align-items:start; } }
+        .main-content { padding:0 25px; }
+        @media(min-width:768px) { .main-content { padding:0; } }
+
+        /* ── Schedule box ── */
+        .schedule-box {
+            background:linear-gradient(135deg,#e8f5e9,#f1f8f4);
+            border-left:4px solid #39a900; border-radius:12px;
+            padding:22px 28px; margin:10px 0 18px;
+            box-shadow:0 4px 15px rgba(57,169,0,.15);
+        }
+        .schedule-box h3 { color:#1b5e20; font-size:1.1rem; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+        .schedule-box h3 i { color:#39a900; font-size:1.35rem; }
+        .schedule-info { background:#fff; padding:18px; border-radius:8px; border:2px solid #39a900; }
+        .schedule-info p { color:#2c3e50; font-size:1.05rem; line-height:1.7; margin:6px 0; }
+        .schedule-info strong { color:#39a900; font-size:1.15rem; }
+
+        /* ── Botón ── */
+        .button-container { text-align:center; margin:20px 0; }
+        .join-button {
+            display:inline-flex; align-items:center; gap:12px;
+            background:linear-gradient(135deg,#39a900,#4cd137);
+            color:#fff; padding:15px 32px; border-radius:30px;
+            text-decoration:none; font-weight:700; font-size:1.05rem;
+            transition:all .3s ease; box-shadow:0 5px 20px rgba(57,169,0,.4);
+            position:relative; overflow:hidden;
+        }
+        .join-button::after {
+            content:''; position:absolute; top:-50%; left:-60%; width:40%; height:200%;
+            background:rgba(255,255,255,.25); transform:skewX(-20deg);
+            animation:shine 3s ease-in-out infinite;
+        }
+        @keyframes shine { 0%,100%{left:-60%} 50%{left:120%} }
+        .join-button:hover { transform:translateY(-3px); box-shadow:0 8px 30px rgba(57,169,0,.55); }
+        .join-button i { font-size:1.2rem; }
+
+        /* ── Invitación ── */
+        .invitation-text {
+            background:linear-gradient(135deg,#fff9e6,#fffbf0);
+            border:2px solid #ffd700; border-radius:12px;
+            padding:14px 20px; margin:14px 0;
+            box-shadow:0 4px 15px rgba(255,215,0,.2); text-align:center;
+        }
+        .invitation-text p { color:#2c3e50; line-height:1.7; font-size:1rem; }
+
+        /* ── Sidebar ── */
+        .sidebar { display:flex; flex-direction:column; gap:14px; padding:0 25px 0 0; }
+        @media(max-width:767px) { .sidebar { padding:0 25px; } }
+
+        .sidebar-image {
+            width:100%; max-width:100%; height:auto; max-height:220px;
+            object-fit:contain; border-radius:15px;
+            box-shadow:0 10px 30px rgba(0,0,0,.2); transition:all .4s ease;
+        }
+        .sidebar-image:hover { transform:scale(1.05) rotate(1deg); box-shadow:0 15px 40px rgba(0,0,0,.3); }
+
+        /* ═══════════════════════════════════
+           RELOJ DIGITAL LED — 7 segmentos
+           ═══════════════════════════════════ */
+        .digital-clock-card {
+            background:linear-gradient(135deg,#003d5c 0%,#001520 100%);
+            border-radius:18px;
+            padding:18px 16px 14px;
+            text-align:center;
+            box-shadow:0 12px 35px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+            position:relative; overflow:hidden;
+            animation:slideInRight .8s ease-out .4s both;
+            flex-shrink:0;
+        }
+        @keyframes slideInRight { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+        .digital-clock-card::before {
+            content:''; position:absolute; top:-40%; left:-30%;
+            width:200px; height:200px;
+            background:radial-gradient(circle,rgba(57,169,0,.1),transparent 70%);
+            border-radius:50%; pointer-events:none;
+        }
+
+        .clock-label {
+            font-size:.72rem; color:#a4b0be; letter-spacing:.12em;
+            text-transform:uppercase; margin-bottom:10px;
+            position:relative; z-index:1;
+            display:flex; align-items:center; justify-content:center; gap:6px;
+        }
+        .clock-label i { color:#39a900; }
+
+        /* Panel LCD oscuro */
+        .lcd-panel {
+            background:#000d08;
+            border-radius:10px;
+            padding:10px 14px 8px;
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            box-shadow:inset 0 2px 10px rgba(0,0,0,.9), 0 0 18px rgba(57,169,0,.07);
+            position:relative; z-index:1;
+            border:1px solid #0a2018;
+        }
+
+        /* ── Dígito 7 segmentos ── */
+        .digit {
+            width: 22px;
+            height: 38px;
+            position: relative;
+        }
+
+        /* Segmentos horizontales: a (top), g (middle), d (bottom) */
+        .seg-h {
+            position: absolute;
+            left: 3px; right: 3px;
+            height: 3px;
+            border-radius: 2px;
+            background: #051a0d;
+            transition: background .12s, box-shadow .12s;
+        }
+        .seg-h.on { background: #39a900; box-shadow: 0 0 5px #39a900, 0 0 10px rgba(57,169,0,.5); }
+
+        /* Segmentos verticales: f,b (top-left, top-right), e,c (bot-left, bot-right) */
+        .seg-v {
+            position: absolute;
+            top: 4px; bottom: 4px;  /* default override per segment */
+            width: 3px;
+            border-radius: 2px;
+            background: #051a0d;
+            transition: background .12s, box-shadow .12s;
+        }
+        .seg-v.on { background: #39a900; box-shadow: 0 0 5px #39a900, 0 0 10px rgba(57,169,0,.5); }
+
+        /* Position each segment */
+        .sa { top: 0;    left: 3px; right: 3px; }            /* top horiz */
+        .sg { top: 50%;  left: 3px; right: 3px; margin-top:-1.5px; }  /* mid horiz */
+        .sd { bottom:0;  left: 3px; right: 3px; }            /* bot horiz */
+
+        .sf { top: 2px;    bottom:50%; left:0;  width:3px; }  /* top-left vert */
+        .sb { top: 2px;    bottom:50%; right:0; width:3px; }  /* top-right vert */
+        .se { top: 50%;    bottom:2px; left:0;  width:3px; }  /* bot-left vert */
+        .sc { top: 50%;    bottom:2px; right:0; width:3px; }  /* bot-right vert */
+
+        /* Dos puntos */
+        .colon {
+            display:flex; flex-direction:column;
+            justify-content:space-evenly;
+            height:36px; padding:6px 0; gap:4px;
+            width:8px; align-items:center;
+        }
+        .colon-dot {
+            width:4px; height:4px; border-radius:50%;
+            background:#39a900;
+            box-shadow:0 0 5px #39a900;
+            animation:blinkDot 1s step-end infinite;
+        }
+        @keyframes blinkDot { 0%,49%{opacity:1} 50%,100%{opacity:.12} }
+
+        /* AM/PM tag */
+        .ampm-tag {
+            font-size:.6rem; font-weight:800; color:#39a900;
+            letter-spacing:.06em; align-self:flex-end;
+            padding-bottom:3px; opacity:.9;
+            font-family:'Courier New',monospace;
+        }
+
+        /* Sub info */
+        .clock-sub { margin-top:10px; position:relative; z-index:1; }
+        .clock-day-label { font-size:1.1rem; color:#a4b0be; margin-bottom:5px; }
+        .clock-target {
+            display:inline-flex; align-items:center; gap:6px;
+            background:rgba(57,169,0,.12); border:1px solid rgba(57,169,0,.28);
+            border-radius:20px; padding:4px 14px;
+            font-size:.8rem; font-weight:700; color:#4cd137;
+        }
+        .pulse-dot {
+            width:7px; height:7px; border-radius:50%; background:#39a900;
+            animation:rippleDot 1.5s ease-out infinite;
+        }
+        @keyframes rippleDot {
+            0%{box-shadow:0 0 0 0 rgba(57,169,0,.7)}
+            70%{box-shadow:0 0 0 7px rgba(57,169,0,0)}
+            100%{box-shadow:0 0 0 0 rgba(57,169,0,0)}
+        }
+
+        /* ═══════════════════════════════════
+           BLOQUE NARANJA — ancho completo
+           ═══════════════════════════════════ */
+        .material-section {
+            background:#f8f9fa;
+            padding:8px 30px;
+            border-top:1px solid #e0e0e0;
+        }
+        .material-wrapper { max-width:100%; margin:0 auto; }
+        .material-box {
+            background:linear-gradient(135deg,#fff9e6,#fffbf0);
+            border:2px solid #ffd700; border-radius:12px;
+            padding:10px 28px;
+            display:flex; align-items:center; gap:18px;
+            box-shadow:0 4px 15px rgba(255,215,0,.2);
+            animation:fadeIn .8s ease-out .8s both;
+            transition:all .3s ease;
+        }
+        .material-box:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,215,0,.3); }
+        .material-box i { color:#f39c12; font-size:2rem; flex-shrink:0; }
+        .material-box strong { color:#e67e22; font-size:1rem; }
+        .material-box-text { color:#2c3e50; font-size:.95rem; line-height:1.6; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+        /* ═══════════════════════════════════
+           PAPIRO — idéntico al reference
+           ═══════════════════════════════════ */
+        .quote-section {
+            background:
+                linear-gradient(135deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.85) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23f4e7d7" width="100" height="100"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23e6d4b8" stroke-width="0.5" opacity="0.3"/></svg>');
+            background-color:#f4e7d7;
+            padding:15px 50px; text-align:center; font-style:italic;
+            box-shadow:inset 0 2px 8px rgba(0,0,0,.08),inset 0 -2px 8px rgba(0,0,0,.08);
+            animation:fadeIn 1s ease-out .8s both;
+            position:relative; overflow:hidden;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            gap:8px; margin:0;
+        }
+        @media(max-width:768px){ .quote-section{padding:12px 25px;gap:6px} }
+
+        /* Textura papiro */
+        .quote-section::before {
+            content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+            background-image:
+                repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(139,90,43,.03) 2px,rgba(139,90,43,.03) 3px),
+                repeating-linear-gradient(90deg,transparent,transparent 2px,rgba(139,90,43,.02) 2px,rgba(139,90,43,.02) 3px);
+            pointer-events:none; opacity:.6;
+        }
+        /* Mancha envejecimiento */
+        .quote-section::after {
+            content:''; position:absolute; top:15px; right:25px;
+            width:60px; height:60px;
+            background:radial-gradient(circle,rgba(139,90,43,.06) 0%,transparent 60%);
+            border-radius:50%; pointer-events:none;
+        }
+
+        .quote-content { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:10px; max-width:1000px; width:100%; }
+        .quote-main-wrapper { display:flex; align-items:center; justify-content:center; gap:30px; flex-wrap:nowrap; width:100%; }
+        @media(max-width:768px){ .quote-main-wrapper{flex-direction:column;gap:10px} }
+        .quote-text-wrapper { flex:1; display:flex; flex-direction:column; align-items:center; }
+        .quote-icon { font-size:2.5rem; color:#8b5a2b; opacity:.2; font-family:Georgia,serif; line-height:0; margin-bottom:8px; text-shadow:2px 2px 4px rgba(0,0,0,.1); }
+
+        .quote-text {
+            color:#2d3436; font-size:1rem; margin:0; line-height:1.4;
+            font-family:'Georgia','Times New Roman',serif; font-weight:500;
+            letter-spacing:.3px; text-shadow:1px 1px 2px rgba(0,0,0,.05); font-style:italic;
+            background:linear-gradient(to right,#003d5c 0%,#003d5c 100%);
+            background-size:0% 100%; background-repeat:no-repeat;
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+            animation:writeTextLoop 6s ease-in-out infinite;
+        }
+        @keyframes writeTextLoop {
+            0%{background-size:0% 100%}
+            50%,100%{background-size:100% 100%}
+        }
+
+        .quote-author-wrapper { display:flex; align-items:center; justify-content:center; gap:15px; }
+        .quote-author {
+            color:#5a5a5a; font-size:.95rem; font-style:normal; font-weight:600;
+            display:inline-flex; align-items:center;
+            padding:6px 0 6px 12px; border-left:4px solid #39a900; white-space:nowrap;
+        }
+        .quote-author::before { content:'— '; color:#39a900; font-weight:bold; font-size:1rem; }
+
+        .quote-flourish { margin:8px 0; width:100px; height:2px; background:linear-gradient(to right,transparent,#39a900,transparent); position:relative; }
+        .quote-flourish::before,.quote-flourish::after { content:'◆'; position:absolute; color:#39a900; font-size:.7rem; top:-6px; text-shadow:0 0 5px rgba(57,169,0,.3); }
+        .quote-flourish::before{left:-16px}
+        .quote-flourish::after{right:-16px}
+
+        .quote-image-container { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        @media(max-width:768px){ .quote-image-container{display:none} }
+        .writing-pen-illustration { width:50px; height:50px; display:flex; align-items:center; justify-content:center; }
+        .feather-emoji { font-size:2.5rem; filter:drop-shadow(2px 2px 4px rgba(0,0,0,.2)); animation:penWiggle 3s ease-in-out infinite; display:block; }
+        @keyframes penWiggle { 0%,100%{transform:rotate(-8deg) translateY(0)} 50%{transform:rotate(-12deg) translateY(-5px)} }
+
+        /* ── Footer (sin rol) ── */
+        .footer { background:linear-gradient(135deg,#003d5c 0%,#00597a 100%); padding:5px 30px; text-align:center; color:#fff; }
+        .footer p { margin:0; }
+        .footer .name { font-size:1.1rem; font-weight:700; color:#39a900; display:flex; align-items:center; justify-content:center; gap:8px; }
+
+        /* ═══════════════════════════════════
+           BADGE DE ESTADO EN VIVO
+           ═══════════════════════════════════ */
+        .status-badge {
+            display:inline-flex; align-items:center; gap:7px;
+            padding:6px 14px; border-radius:20px;
+            font-weight:700; font-size:.78rem; letter-spacing:.05em;
+            text-transform:uppercase; white-space:nowrap;
+            transition:all .6s ease;
+            box-shadow:0 3px 12px rgba(0,0,0,.25);
+        }
+        .status-badge.live {
+            background:linear-gradient(135deg,#e53935,#ef5350);
+            color:#fff;
+            box-shadow:0 3px 16px rgba(229,57,53,.55);
+            animation:badgePulse 2s ease-in-out infinite;
+        }
+        .status-badge.offline {
+            background:rgba(255,255,255,.12);
+            color:rgba(255,255,255,.55);
+            border:1px solid rgba(255,255,255,.18);
+        }
+        @keyframes badgePulse {
+            0%,100%{box-shadow:0 3px 16px rgba(229,57,53,.55)}
+            50%{box-shadow:0 3px 24px rgba(229,57,53,.9), 0 0 0 6px rgba(229,57,53,.15)}
+        }
+
+        .status-dot {
+            width:8px; height:8px; border-radius:50%;
+            flex-shrink:0;
+        }
+        .live .status-dot {
+            background:#fff;
+            animation:dotBlink 1s step-end infinite;
+        }
+        @keyframes dotBlink { 0%,49%{opacity:1} 50%,100%{opacity:.2} }
+        .offline .status-dot { background:rgba(255,255,255,.4); }
+
+        /* Status en el reloj (clock-target dinámico) */
+        .clock-target.live-mode {
+            background:rgba(229,57,53,.15);
+            border-color:rgba(229,57,53,.4);
+            color:#ff6b6b;
+        }
+        .clock-target.live-mode .pulse-dot {
+            background:#e53935;
+            animation:rippleDotRed 1.5s ease-out infinite;
+        }
+        @keyframes rippleDotRed {
+            0%{box-shadow:0 0 0 0 rgba(229,57,53,.7)}
+            70%{box-shadow:0 0 0 7px rgba(229,57,53,0)}
+            100%{box-shadow:0 0 0 0 rgba(229,57,53,0)}
+        }
+
+        /* Status card grande en el reloj */
+        .live-status-bar {
+            margin-top:10px; position:relative; z-index:1;
+            display:flex; align-items:center; justify-content:center; gap:8px;
+            padding:7px 16px; border-radius:10px;
+            font-size:.8rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+            transition:all .6s ease;
+            text-decoration:none;
+        }
+        .live-status-bar.active {
+            background:rgba(39,174,96,.18);
+            border:1px solid rgba(39,174,96,.45);
+            color:#4cd137;
+            cursor:pointer;
+            animation:barGlow 2.5s ease-in-out infinite;
+        }
+        .live-status-bar.active:hover {
+            background:rgba(39,174,96,.30);
+            border-color:rgba(39,174,96,.7);
+            transform:translateY(-1px);
+            box-shadow:0 4px 16px rgba(57,169,0,.35);
+        }
+        @keyframes barGlow {
+            0%,100%{box-shadow:0 0 0 0 rgba(57,169,0,.0)}
+            50%{box-shadow:0 0 12px 2px rgba(57,169,0,.25)}
+        }
+        .live-status-bar.active .bar-dot {
+            width:9px; height:9px; border-radius:50%; background:#39a900;
+            animation:rippleDot 1.5s ease-out infinite;
+        }
+        .live-status-bar.hidden {
+            display:none;
+        }
+
+        /* ── Botón deshabilitado ── */
+        .join-button.disabled {
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+            box-shadow: none;
+            cursor: not-allowed;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .join-button.disabled::after { animation: none; }
+
+        /* ── Contador regresivo ── */
+        .countdown-container {
+            background: linear-gradient(135deg, #1a2a3a, #0d1f2d);
+            border: 1px solid rgba(57,169,0,.25);
+            border-radius: 14px;
+            padding: 14px 18px 12px;
+            margin: 12px 0 8px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 6px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.04);
+            animation: fadeIn .8s ease-out .5s both;
+        }
+        .countdown-label {
+            font-size: .68rem;
+            color: #a4b0be;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .countdown-label i { color: #f39c12; }
+        .countdown-units {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .countdown-num {
+            font-family: 'Courier New', monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #39a900;
+            line-height: 1;
+            background: #000d08;
+            border-radius: 8px;
+            padding: 6px 10px;
+            min-width: 52px;
+            text-align: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,.8), 0 0 10px rgba(57,169,0,.15);
+            border: 1px solid #0a2018;
+        }
+        .countdown-unit-label {
+            font-size: .6rem;
+            color: #78909c;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .countdown-sep {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #39a900;
+            opacity: .6;
+            margin-bottom: 18px;
+            font-family: 'Courier New', monospace;
+        }
+        .countdown-container.live-now {
+            background: linear-gradient(135deg, #1a3a1a, #0d2010);
+            border-color: rgba(57,169,0,.5);
+            box-shadow: 0 0 20px rgba(57,169,0,.2), inset 0 1px 0 rgba(57,169,0,.1);
+        }
+        .countdown-container.live-now .countdown-num {
+            color: #4cd137;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,.8), 0 0 12px rgba(57,169,0,.35);
+        }
+        .live-message {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #4cd137;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Responsive misc */
+        @media(max-width:768px){
+            .quote-section{padding:10px 20px}
+            .quote-text{font-size:1.05rem;line-height:1.5}
+            .quote-author{font-size:.85rem;padding:5px 0 5px 10px;border-left-width:3px}
+            .quote-flourish{width:80px;margin:6px 0}
+            .quote-main-wrapper{gap:7px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floating-particles">
+        <div class="particle">{ }</div>
+        <div class="particle">&lt;/&gt;</div>
+        <div class="particle">[ ]</div>
+        <div class="particle">( )</div>
+        <div class="particle">===</div>
+        <div class="particle">{ }</div>
+        <div class="particle">&lt;/&gt;</div>
+    </div>
+
+    <div class="session-container">
+        <div class="header-accent"></div>
+
+        <!-- ① Header -->
+        <div class="header-section">
+            <div class="header-title-row">
+                <h1>
+                <span class="code-tag">&lt;</span>Atención en Línea<span class="code-tag">/&gt;</span> &nbsp;Octubre 2026</h1>
+                <div class="date-badge">
+                    <i class="fas fa-calendar-alt"></i>
+                    Todos los Jueves del mes
+                </div>
+                <div class="status-badge offline" id="header-status-badge">
+                    <div class="status-dot"></div>
+                    <span id="header-status-text">Fuera de horario</span>
+                </div>
+          </div>
+        </div>
+
+        <!-- ② Saludo -->
+        <div class="intro-section">
+            <p>Les comparto el horario de atención en línea para el mes de <strong>octubre</strong>. Estaré disponible para acompañarlos, resolver sus dudas y brindarles orientación personalizada.</p>
+            <p style="margin-top:12px;">¡Los invito a aprovechar este espacio — su aprendizaje y crecimiento son mi mayor motivación!</p>
+        </div>
+
+        <!-- ③ Grid principal -->
+        <div class="content-wrapper">
+            <div class="content-grid">
+
+                <!-- Columna izquierda -->
+                <div class="main-content">
+                 <!-- Columna — Reloj digital + imagen -->
+					                    <div class="digital-clock-card">
+                        <div class="clock-label">
+                            <i class="fas fa-clock"></i>
+                            Hora actual
+                        </div>
+
+                        <!-- LCD 7 segmentos -->
+                        <div class="lcd-panel">
+                            <!-- H1 -->
+                            <div class="digit" id="d-h1">
+                                <div class="seg-h sa" id="h1-a"></div>
+                                <div class="seg-v sb" id="h1-b"></div>
+                                <div class="seg-v sc" id="h1-c"></div>
+                                <div class="seg-h sd" id="h1-d"></div>
+                                <div class="seg-v se" id="h1-e"></div>
+                                <div class="seg-v sf" id="h1-f"></div>
+                                <div class="seg-h sg" id="h1-g"></div>
+                            </div>
+                            <!-- H2 -->
+                            <div class="digit" id="d-h2">
+                                <div class="seg-h sa" id="h2-a"></div>
+                                <div class="seg-v sb" id="h2-b"></div>
+                                <div class="seg-v sc" id="h2-c"></div>
+                                <div class="seg-h sd" id="h2-d"></div>
+                                <div class="seg-v se" id="h2-e"></div>
+                                <div class="seg-v sf" id="h2-f"></div>
+                                <div class="seg-h sg" id="h2-g"></div>
+                            </div>
+                            <!-- : -->
+                            <div class="colon">
+                                <div class="colon-dot"></div>
+                                <div class="colon-dot"></div>
+                            </div>
+                            <!-- M1 -->
+                            <div class="digit" id="d-m1">
+                                <div class="seg-h sa" id="m1-a"></div>
+                                <div class="seg-v sb" id="m1-b"></div>
+                                <div class="seg-v sc" id="m1-c"></div>
+                                <div class="seg-h sd" id="m1-d"></div>
+                                <div class="seg-v se" id="m1-e"></div>
+                                <div class="seg-v sf" id="m1-f"></div>
+                                <div class="seg-h sg" id="m1-g"></div>
+                            </div>
+                            <!-- M2 -->
+                            <div class="digit" id="d-m2">
+                                <div class="seg-h sa" id="m2-a"></div>
+                                <div class="seg-v sb" id="m2-b"></div>
+                                <div class="seg-v sc" id="m2-c"></div>
+                                <div class="seg-h sd" id="m2-d"></div>
+                                <div class="seg-v se" id="m2-e"></div>
+                                <div class="seg-v sf" id="m2-f"></div>
+                                <div class="seg-h sg" id="m2-g"></div>
+                            </div>
+                            <!-- : -->
+                            <div class="colon">
+                                <div class="colon-dot"></div>
+                                <div class="colon-dot"></div>
+                            </div>
+                            <!-- S1 -->
+                            <div class="digit" id="d-s1">
+                                <div class="seg-h sa" id="s1-a"></div>
+                                <div class="seg-v sb" id="s1-b"></div>
+                                <div class="seg-v sc" id="s1-c"></div>
+                                <div class="seg-h sd" id="s1-d"></div>
+                                <div class="seg-v se" id="s1-e"></div>
+                                <div class="seg-v sf" id="s1-f"></div>
+                                <div class="seg-h sg" id="s1-g"></div>
+                            </div>
+                            <!-- S2 -->
+                            <div class="digit" id="d-s2">
+                                <div class="seg-h sa" id="s2-a"></div>
+                                <div class="seg-v sb" id="s2-b"></div>
+                                <div class="seg-v sc" id="s2-c"></div>
+                                <div class="seg-h sd" id="s2-d"></div>
+                                <div class="seg-v se" id="s2-e"></div>
+                                <div class="seg-v sf" id="s2-f"></div>
+                                <div class="seg-h sg" id="s2-g"></div>
+                            </div>
+                            <div class="ampm-tag" id="ampm">AM</div>
+                        </div>
+
+                        <div class="clock-sub">
+                            <div class="clock-day-label">Horario de atención</div>
+                            <div class="clock-target" id="clock-target">
+                                <div class="pulse-dot"></div>
+                                Jueves · 2:00 PM – 3:00 PM
+                            </div>
+                        </div>
+
+                        <a  href="https://teams.microsoft.com/meet/23117547413441?p=Iab7oKO7eOsgt7u31Z"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            class="live-status-bar hidden"
+                            id="live-status-bar">
+                            <div class="bar-dot"></div>
+                            <span id="live-status-label">● SESIÓN ACTIVA</span>
+                        </a>
+                    </div>
+
+					
+                  <!-- Contador regresivo -->
+                  <div class="countdown-container" id="countdown-container">
+                      <div class="countdown-label" id="countdown-label">
+                          <i class="fas fa-hourglass-half"></i>
+                          <span id="countdown-label-text">Próxima atención en</span>
+                      </div>
+                      <div class="countdown-units" id="countdown-units">
+                          <div class="countdown-unit" id="cd-days-wrap">
+                              <div class="countdown-num" id="cd-days">00</div>
+                              <div class="countdown-unit-label">días</div>
+                          </div>
+                          <div class="countdown-sep" id="cd-sep1">:</div>
+                          <div class="countdown-unit">
+                              <div class="countdown-num" id="cd-hours">00</div>
+                              <div class="countdown-unit-label">horas</div>
+                          </div>
+                          <div class="countdown-sep">:</div>
+                          <div class="countdown-unit">
+                              <div class="countdown-num" id="cd-mins">00</div>
+                              <div class="countdown-unit-label">minutos</div>
+                          </div>
+                          <div class="countdown-sep" id="cd-sep2">:</div>
+                          <div class="countdown-unit" id="cd-secs-wrap">
+                              <div class="countdown-num" id="cd-secs">00</div>
+                              <div class="countdown-unit-label">segundos</div>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="button-container">
+                        <a href="https://zajuna.sena.edu.co/zajuna/mod/chat/view.php?id=6108671"
+                           target="_blank" class="join-button disabled" id="join-btn" rel="noreferrer noopener">
+                            <i class="fas fa-headset"></i>
+                            <span>Ingresar a la Atención en Línea</span>
+                        </a>
+                    </div>
+                </div>
+
+                
+                <div class="sidebar">
+
+
+                    <img src="https://drive.google.com/thumbnail?id=1wrCyJ-zfMvgA9qHubpESY6NXWQPOReRG&sz=w1000"
+                         alt="Atención en línea" class="sidebar-image">
+                    <p style="font-size:.68rem;color:#888;text-align:center;margin-top:4px;line-height:1.4;">
+                        Imagen SENA&mdash;
+                      <a href="https://www.sena.edu.co" target="_blank" rel="noreferrer noopener"
+                           style="color:#39a900;text-decoration:none;">www.sena.edu.co</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ④ Bloque naranja — ANCHO COMPLETO de lado a lado -->
+        <div class="material-section">
+            <div class="material-wrapper">
+                <div class="material-box">
+                    <i class="fas fa-headset"></i>
+                    <div class="material-box-text">
+                        <strong>Recuerda:</strong> La atención en línea es tu espacio para resolver dudas, recibir orientación
+                        y hacer seguimiento a tus avances. <strong>¡Conéctate todos los jueves!</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⑤ PAPIRO frase célebre -->
+        <div class="quote-section">
+            <div class="quote-content">
+                <div class="quote-main-wrapper">
+                    <div class="quote-text-wrapper">
+                        <div class="quote-icon">&ldquo;</div>
+                        <p class="quote-text">Siempre parece imposible hasta que se hace.</p>
+                        <div class="quote-flourish"></div>
+                    </div>
+                    <div class="quote-image-container">
+                        <div class="writing-pen-illustration">
+                            <span class="feather-emoji">🪶</span>
+                        </div>
+                    </div>
+                    <div class="quote-author-wrapper">
+                        <div class="quote-author">Nelson Mandela</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-accent"></div>
+
+        <!-- ⑥ Footer — SIN texto de rol -->
+        <div class="footer">
+            <p class="name">
+                <i class="fas fa-user-tie"></i>
+                Fabián Alexander García Martínez
+            </p>
+        </div>
+
+        <div class="header-accent"></div>
+    </div>
+
+    <script>
+        // ─── Configuración del horario de atención ───
+        // Día: 1 = Lunes, 0 = Dom, 2 = Mar … 6 = Sáb
+        const ATTENDANCE = { day: 4, startH: 14, startM: 0, endH: 15, endM: 0 };
+
+        // ─── Mapa segmentos a,b,c,d,e,f,g para 0-9 ───
+        const SEGS = {
+            0:[1,1,1,1,1,1,0],
+            1:[0,1,1,0,0,0,0],
+            2:[1,1,0,1,1,0,1],
+            3:[1,1,1,1,0,0,1],
+            4:[0,1,1,0,0,1,1],
+            5:[1,0,1,1,0,1,1],
+            6:[1,0,1,1,1,1,1],
+            7:[1,1,1,0,0,0,0],
+            8:[1,1,1,1,1,1,1],
+            9:[1,1,1,1,0,1,1]
+        };
+        const NAMES = ['a','b','c','d','e','f','g'];
+
+        function setDigit(prefix, n) {
+            const map = SEGS[n] ?? SEGS[0];
+            NAMES.forEach((s,i)=>{
+                const el = document.getElementById(prefix+'-'+s);
+                if(el) el.classList.toggle('on', map[i]===1);
+            });
+        }
+
+        function isLive(now) {
+            const day = now.getDay();
+            const h = now.getHours(), m = now.getMinutes();
+            const totalMin = h * 60 + m;
+            const startMin = ATTENDANCE.startH * 60 + ATTENDANCE.startM;
+            const endMin   = ATTENDANCE.endH   * 60 + ATTENDANCE.endM;
+            return day === ATTENDANCE.day && totalMin >= startMin && totalMin < endMin;
+        }
+
+        // ─── Calcula segundos hasta la próxima sesión ───
+        function secondsToNextSession(now) {
+            const dayOfWeek  = now.getDay();
+            const curMin     = now.getHours() * 60 + now.getMinutes();
+            const startMin   = ATTENDANCE.startH * 60 + ATTENDANCE.startM;
+            const endMin     = ATTENDANCE.endH   * 60 + ATTENDANCE.endM;
+
+            // Si hoy ES el día y aún no ha empezado
+            if (dayOfWeek === ATTENDANCE.day && curMin < startMin) {
+                return (startMin - curMin) * 60 - now.getSeconds();
+            }
+
+            // Calcular días hasta el próximo lunes (o el día configurado)
+            let daysAhead = (ATTENDANCE.day - dayOfWeek + 7) % 7;
+            if (daysAhead === 0) daysAhead = 7; // ya pasó hoy o estamos en sesión
+
+            const nextDate = new Date(now);
+            nextDate.setDate(now.getDate() + daysAhead);
+            nextDate.setHours(ATTENDANCE.startH, ATTENDANCE.startM, 0, 0);
+
+            return Math.floor((nextDate - now) / 1000);
+        }
+
+        // ─── Actualiza el contador regresivo ───
+        function updateCountdown(now) {
+            const container  = document.getElementById('countdown-container');
+            const labelText  = document.getElementById('countdown-label-text');
+            const labelIcon  = document.querySelector('#countdown-label i');
+            const units      = document.getElementById('countdown-units');
+            const cdDays     = document.getElementById('cd-days');
+            const cdHours    = document.getElementById('cd-hours');
+            const cdMins     = document.getElementById('cd-mins');
+            const cdSecs     = document.getElementById('cd-secs');
+            const daysWrap   = document.getElementById('cd-days-wrap');
+            const sep1       = document.getElementById('cd-sep1');
+            const sep2       = document.getElementById('cd-sep2');
+            const btn        = document.getElementById('join-btn');
+
+            if (isLive(now)) {
+                // ── SESIÓN ACTIVA ──
+                container.classList.add('live-now');
+                labelIcon.className = 'fas fa-circle';
+                labelIcon.style.color = '#e53935';
+                labelText.textContent = '¡Sesión en curso ahora!';
+
+                // Calcular tiempo restante en la sesión
+                const endMin   = ATTENDANCE.endH * 60 + ATTENDANCE.endM;
+                const curSecs  = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+                const remaining = endMin * 60 - curSecs;
+                const rMins = Math.floor(remaining / 60);
+                const rSecs = remaining % 60;
+
+                // Solo mostrar minutos y segundos restantes en sesión
+                daysWrap.style.display = 'none';
+                sep1.style.display = 'none';
+                cdHours.closest('.countdown-unit').style.display = 'none';
+                cdHours.closest('.countdown-unit').nextElementSibling.style.display = 'none';
+                cdMins.textContent = String(rMins).padStart(2,'0');
+                cdSecs.textContent = String(rSecs).padStart(2,'0');
+                labelText.textContent = 'Termina en';
+
+                // Habilitar botón
+                btn.classList.remove('disabled');
+                btn.style.pointerEvents = '';
+            } else {
+                // ── FUERA DE HORARIO ──
+                container.classList.remove('live-now');
+                labelIcon.className = 'fas fa-hourglass-half';
+                labelIcon.style.color = '#f39c12';
+                labelText.textContent = 'Próxima atención en';
+
+                // Restaurar visibilidad de todas las unidades
+                daysWrap.style.display = '';
+                sep1.style.display = '';
+                cdHours.closest('.countdown-unit').style.display = '';
+                const hoursUnit = cdHours.closest('.countdown-unit');
+                if (hoursUnit.nextElementSibling) hoursUnit.nextElementSibling.style.display = '';
+
+                const totalSecs = secondsToNextSession(now);
+                const days  = Math.floor(totalSecs / 86400);
+                const hours = Math.floor((totalSecs % 86400) / 3600);
+                const mins  = Math.floor((totalSecs % 3600) / 60);
+                const secs  = totalSecs % 60;
+
+                // Ocultar días si es 0
+                daysWrap.style.display  = days > 0 ? '' : 'none';
+                sep1.style.display      = days > 0 ? '' : 'none';
+                sep2.style.display      = '';
+
+                cdDays.textContent  = String(days).padStart(2,'0');
+                cdHours.textContent = String(hours).padStart(2,'0');
+                cdMins.textContent  = String(mins).padStart(2,'0');
+                cdSecs.textContent  = String(secs).padStart(2,'0');
+
+                // Deshabilitar botón
+                btn.classList.add('disabled');
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function updateStatusBadge(live) {
+            const badge   = document.getElementById('header-status-badge');
+            const text    = document.getElementById('header-status-text');
+            const bar     = document.getElementById('live-status-bar');
+            const target  = document.getElementById('clock-target');
+
+            if (live) {
+                badge.className  = 'status-badge live';
+                text.textContent = '● En Línea Ahora';
+                bar.className    = 'live-status-bar active';
+                target.classList.add('live-mode');
+            } else {
+                badge.className  = 'status-badge offline';
+                text.textContent = 'Fuera de horario';
+                bar.className    = 'live-status-bar hidden';
+                target.classList.remove('live-mode');
+            }
+        }
+
+        function tick() {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            const ap = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+
+            setDigit('h1', Math.floor(h/10));
+            setDigit('h2', h%10);
+            setDigit('m1', Math.floor(m/10));
+            setDigit('m2', m%10);
+            setDigit('s1', Math.floor(s/10));
+            setDigit('s2', s%10);
+            document.getElementById('ampm').textContent = ap;
+
+            const nowFull = new Date();
+            updateStatusBadge(isLive(nowFull));
+            updateCountdown(nowFull);
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    </script>
+</body>
+</html>
